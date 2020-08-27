@@ -59,7 +59,7 @@ def read_menus():
 @app.route('/api/menu/HwangPo', methods=['get'])
 def read_menus_hwangpo():
     # 1. DB에서 리뷰 정보 모두 가져오기 (근데 id 는 필요없어요  가 0 ㅇ의미)
-    menus=list(db.burgerKing.find({}, {'_id':0}).sort('price', -1))
+    menus=list(db.HwangPo.find({}, {'_id':0}).sort('price', -1))
     #1. 모든 메뉴s의 데이터를 가지고 온 후 list로 변환한다
     #2. 성공 메세지와 함께 리뷰를 내보낸다
     # return jsonify({'result':'success', 'msg':'메뉴를 성공적으로 받아왔다!! 아오!!'})

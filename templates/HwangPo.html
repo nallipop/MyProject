@@ -52,6 +52,8 @@
     </script>
 
     <script>
+        let total = 0;
+
         $(document).ready(function () {
             $.ajax({
                 type: 'GET',
@@ -81,11 +83,11 @@
                         <div class="card-footer">
                             <form name="form">
                                 <span style="font-size: 20px;">${price}</span><br>
-                                <input name="chkbox" type="checkbox" value="3000"
+                                <input name="chkbox" type="checkbox" value="${price}"
                                        onClick="itemSum(this.form);"> 메뉴선택
-                                <button type="button" class="minus" onclick="minusClick()">-</button>
-                                <input type="number" class="numBox" min="0" value="0" readonly="readonly"/>
-                                <button type="button" class="plus" onclick="plusClick()">+</button>
+                                <button type="button" class="minus" onclick="minusClick('${menu.replace(/\s/g, '')}', ${price})">-</button>
+                                <input type="number" id="numBox${menu.replace(/\s/g, '')}" class="numBox" min="0" value="0" readonly="readonly"/>
+                                <button type="button" class="plus" onclick="plusClick('${menu.replace(/\s/g, '')}', ${price})">+</button>
                             </form>
 
                         </div>
@@ -93,27 +95,29 @@
             $("#card-group-2").append(tempHtml)
         }
 
-        function plusClick(count) {
+        function plusClick(count, price) {
             let num = $(`#numBox${count}`).val();
             let plusNum = Number(num) + 1;
 
             $(`#numBox${count}`).val(plusNum);
+            total += price;
+            $('#totalPrice').val(total);
         }
 
-        function minusClick(count) {
+        function minusClick(count, price) {
             let num = $(`#numBox${count}`).val();
             let minusNum = Number(num) - 1;
 
-            if (minusNum <= 0) {
+            if (minusNum === 0) {
+                total -= price
+                $(`#numBox${count}`).val(0);
+            } else if (minusNum < 0) {
                 $(`#numBox${count}`).val(0);
             } else {
                 $(`#numBox${count}`).val(minusNum);
+                total -= price
             }
-        }
-
-        function calculate() {
-            let sum = 5
-            $('#totalPrice').val(sum)
+            $('#totalPrice').val(total);
         }
 
         function itemSum(frm) {
@@ -267,155 +271,352 @@
 
             <div id="tab1" class="tabcontent current">
                 <h4>사장님이 강력추천!</h4>
-                <!--                <p>대표메뉴 자리</p>-->
-                <div class="card-group" id="card-group-1">
-                    <div class="card">
-                        <img class="card-img-top"
-                             src="https://i.imgur.com/Gc03wiv.jpg"
-                             width="375" height="281" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <form name="form">
-                                <span style="font-size: 20px;">10000</span><br>
-                                <input name="chkbox" type="checkbox" value="10000"
-                                       onClick="itemSum(this.form);"> 메뉴선택
-                                <button type="button" class="minus" onclick="minusClick(1)">-</button>
-                                <input type="number" id="numBox1" class="numBox" min="0" value="0" readonly="readonly"/>
-                                <button type="button" class="plus" onclick="plusClick(1)">+</button>
-                            </form>
 
-                        </div>
-                    </div>
-                    <div class="card">
-                        <img class="card-img-top"
-                             src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjM2/MDAxNTQ2NTg4MDUzOTY5.9C76ISfXiVn1J_ZZENGFnZ8M-cuTgF70vEG7edd8nGMg.U7o5pksBLjo64FIccj44AEfXK6ZwjFH48OY4CsFhpJ0g.JPEG.msinvestment/SE-39b1bc69-cc7f-4c6f-b65b-c1b2cc3f3299.jpg?type=w800"
-                             width="375" height="281" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <form name="form">
-                                <span style="font-size: 20px;">7000</span><br>
-                                <input name="chkbox" type="checkbox" value="7000"
-                                       onClick="itemSum(this.form);"> 메뉴선택
-                                <button type="button" class="minus" onclick="minusClick(2)">-</button>
-                                <input type="number" id="numBox2" class="numBox" min="0" value="0" readonly="readonly"/>
-                                <button type="button" class="plus" onclick="plusClick(2)">+</button>
-                            </form>
-                        </div>
+                <div id="card-group-1">
+                    <div class="card-group">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://i.imgur.com/Gc03wiv.jpg"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름1</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">10000</span><br>
+                                    <input name="chkbox" type="checkbox" value="10000"onClick="itemSum(this.form);"/> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(1, 10000)">-</button>
+                                    <input type="number" id="numBox1" class="numBox" min="0" value="0" readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(1, 10000)">+</button>
+                                </form>
 
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjM2/MDAxNTQ2NTg4MDUzOTY5.9C76ISfXiVn1J_ZZENGFnZ8M-cuTgF70vEG7edd8nGMg.U7o5pksBLjo64FIccj44AEfXK6ZwjFH48OY4CsFhpJ0g.JPEG.msinvestment/SE-39b1bc69-cc7f-4c6f-b65b-c1b2cc3f3299.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름2</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">7000</span><br>
+                                    <input name="chkbox" type="checkbox" value="7000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(2, 7000)">-</button>
+                                    <input type="number" id="numBox2" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(2, 7000)">+</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card">
-                        <img class="card-img-top"
-                             src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMTQ4/MDAxNTQ2NTg4MDQ0MTU3.duWn6wESNY1ycHzDhCzNKEX5_zpjQM-W5hfwQZcfiSsg.gHS60nE7P5HnCRNA3pq974FSrCtCJJtsYbWnDd1WuYgg.JPEG.msinvestment/SE-767b77f0-a149-4585-a1ce-35aceb2fa7a5.jpg?type=w800"
-                             width="375" height="281" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
+                    <div class="card-group">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMTQ4/MDAxNTQ2NTg4MDQ0MTU3.duWn6wESNY1ycHzDhCzNKEX5_zpjQM-W5hfwQZcfiSsg.gHS60nE7P5HnCRNA3pq974FSrCtCJJtsYbWnDd1WuYgg.JPEG.msinvestment/SE-767b77f0-a149-4585-a1ce-35aceb2fa7a5.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름3</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">가격: 21,000원</span><br>
+                                    <input name="chkbox" type="checkbox" value="21000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                                    <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                                </form>
+                            </div>
                         </div>
-                        <div class="card-footer">
-                            <form name="form">
-                                <span style="font-size: 20px;">가격: 21,000원</span><br>
-                                <input name="chkbox" type="checkbox" value="21000"
-                                       onClick="itemSum(this.form);"> 메뉴선택
-                                <button type="button" class="minus" onclick="minusClick(3)">-</button>
-                                <input type="number" id="numBox3" class="numBox" min="0" value="0" readonly="readonly"/>
-                                <button type="button" class="plus" onclick="plusClick(3)">+</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <img class="card-img-top"
-                             src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjQg/MDAxNTQ2NTg4MDUxNjI3.gvJDFxuT7iTDmrgbYzKD5MXZpbY37NtEdBC2XYd1lHEg.U-QewSKruPMHKMSEhTFtrZFRjE9ByWgHKl6ksLAIOikg.JPEG.msinvestment/SE-9ab0bd6a-88d0-47e4-a229-aede3d7e6e36.jpg?type=w800"
-                             width="375" height="281" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <form name="form">
-                                <span style="font-size: 20px;">가격: 9,000원</span><br>
-                                <input name="chkbox" type="checkbox" value="9000"
-                                       onClick="itemSum(this.form);"> 메뉴선택
-                                <button type="button" class="minus" onclick="minusClick(4)">-</button>
-                                <input type="number" id="numBox4" class="numBox" min="0" value="0" readonly="readonly"/>
-                                <button type="button" class="plus" onclick="plusClick(4)">+</button>
-                            </form>
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjQg/MDAxNTQ2NTg4MDUxNjI3.gvJDFxuT7iTDmrgbYzKD5MXZpbY37NtEdBC2XYd1lHEg.U-QewSKruPMHKMSEhTFtrZFRjE9ByWgHKl6ksLAIOikg.JPEG.msinvestment/SE-9ab0bd6a-88d0-47e4-a229-aede3d7e6e36.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름4</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">가격: 9,000원</span><br>
+                                    <input name="chkbox" type="checkbox" value="9000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(4, 9000)">-</button>
+                                    <input type="number" id="numBox4" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(4, 9000)">+</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="tab2" class="tabcontent">
-                <h4>이번주 베스트 인기메뉴!</h4>
-                <p>인기 많은 메뉴순서 노출</p>
-                <div class="card-group" id="card-group-2">
+                <h4>인기메뉴 모음</h4>
+
+                <div id="card-group-2">
+                    <div class="card-group">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://i.imgur.com/Gc03wiv.jpg"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름1</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">10000</span><br>
+                                    <input name="chkbox" type="checkbox" value="10000"onClick="itemSum(this.form);"/> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(1, 10000)">-</button>
+                                    <input type="number" id="numBox5" class="numBox" min="0" value="0" readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(1, 10000)">+</button>
+                                </form>
+
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjM2/MDAxNTQ2NTg4MDUzOTY5.9C76ISfXiVn1J_ZZENGFnZ8M-cuTgF70vEG7edd8nGMg.U7o5pksBLjo64FIccj44AEfXK6ZwjFH48OY4CsFhpJ0g.JPEG.msinvestment/SE-39b1bc69-cc7f-4c6f-b65b-c1b2cc3f3299.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름2</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">7000</span><br>
+                                    <input name="chkbox" type="checkbox" value="7000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(2, 7000)">-</button>
+                                    <input type="number" id="numBox6" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(2, 7000)">+</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-group">
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMTQ4/MDAxNTQ2NTg4MDQ0MTU3.duWn6wESNY1ycHzDhCzNKEX5_zpjQM-W5hfwQZcfiSsg.gHS60nE7P5HnCRNA3pq974FSrCtCJJtsYbWnDd1WuYgg.JPEG.msinvestment/SE-767b77f0-a149-4585-a1ce-35aceb2fa7a5.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름3</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">가격: 21,000원</span><br>
+                                    <input name="chkbox" type="checkbox" value="21000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                                    <input type="number" id="numBox7" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <img class="card-img-top"
+                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjQg/MDAxNTQ2NTg4MDUxNjI3.gvJDFxuT7iTDmrgbYzKD5MXZpbY37NtEdBC2XYd1lHEg.U-QewSKruPMHKMSEhTFtrZFRjE9ByWgHKl6ksLAIOikg.JPEG.msinvestment/SE-9ab0bd6a-88d0-47e4-a229-aede3d7e6e36.jpg?type=w800"
+                                 width="375" height="281" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title">메뉴이름4</h5>
+                                <p class="card-text">메뉴에 대한 간략한 설명</p>
+                            </div>
+                            <div class="card-footer">
+                                <form name="form">
+                                    <span style="font-size: 20px;">가격: 9,000원</span><br>
+                                    <input name="chkbox" type="checkbox" value="9000"
+                                           onClick="itemSum(this.form);"> 메뉴선택
+                                    <button type="button" class="minus" onclick="minusClick(4, 9000)">-</button>
+                                    <input type="number" id="numBox8" class="numBox" min="0" value="0"
+                                           readonly="readonly"/>
+                                    <button type="button" class="plus" onclick="plusClick(4, 9000)">+</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
+
+
+
+<!--            <div id="tab2" class="tabcontent">-->
+<!--                <h4>이번주 베스트 인기메뉴!</h4>-->
+<!--                <div id="card-group-2">-->
+<!--                    <div class="card-group">-->
+<!--                        <div class="card">-->
+<!--                            <img class="card-img-top"-->
+<!--                                 src="https://i.imgur.com/Gc03wiv.jpg"-->
+<!--                                 width="375" height="281" alt="Card image cap">-->
+<!--                            <div class="card-body">-->
+<!--                                <h5 class="card-title">메뉴이름1</h5>-->
+<!--                                <p class="card-text">메뉴에 대한 간략한 설명</p>-->
+<!--                            </div>-->
+<!--                            <div class="card-footer">-->
+<!--                                <form name="form">-->
+<!--                                    <span style="font-size: 20px;">10000</span><br>-->
+<!--                                    <input name="chkbox" type="checkbox" value="10000"-->
+<!--                                           onClick="itemSum(this.form);"> 메뉴선택-->
+<!--                                    <button type="button" class="minus" onclick="minusClick(1, 10000)">-</button>-->
+<!--                                    <input type="number" id="numBox1" class="numBox" min="0" value="0"-->
+<!--                                           readonly="readonly"/>-->
+<!--                                    <button type="button" class="plus" onclick="plusClick(1, 10000)">+</button>-->
+<!--                                </form>-->
+
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="card">-->
+<!--                            <img class="card-img-top"-->
+<!--                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjM2/MDAxNTQ2NTg4MDUzOTY5.9C76ISfXiVn1J_ZZENGFnZ8M-cuTgF70vEG7edd8nGMg.U7o5pksBLjo64FIccj44AEfXK6ZwjFH48OY4CsFhpJ0g.JPEG.msinvestment/SE-39b1bc69-cc7f-4c6f-b65b-c1b2cc3f3299.jpg?type=w800"-->
+<!--                                 width="375" height="281" alt="Card image cap">-->
+<!--                            <div class="card-body">-->
+<!--                                <h5 class="card-title">메뉴이름2</h5>-->
+<!--                                <p class="card-text">메뉴에 대한 간략한 설명</p>-->
+<!--                            </div>-->
+<!--                            <div class="card-footer">-->
+<!--                                <form name="form">-->
+<!--                                    <span style="font-size: 20px;">7000</span><br>-->
+<!--                                    <input name="chkbox" type="checkbox" value="7000"-->
+<!--                                           onClick="itemSum(this.form);"> 메뉴선택-->
+<!--                                    <button type="button" class="minus" onclick="minusClick(2, 7000)">-</button>-->
+<!--                                    <input type="number" id="numBox2" class="numBox" min="0" value="0"-->
+<!--                                           readonly="readonly"/>-->
+<!--                                    <button type="button" class="plus" onclick="plusClick(2, 7000)">+</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <div class="card-group">-->
+<!--                        <div class="card">-->
+<!--                            <img class="card-img-top"-->
+<!--                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMTQ4/MDAxNTQ2NTg4MDQ0MTU3.duWn6wESNY1ycHzDhCzNKEX5_zpjQM-W5hfwQZcfiSsg.gHS60nE7P5HnCRNA3pq974FSrCtCJJtsYbWnDd1WuYgg.JPEG.msinvestment/SE-767b77f0-a149-4585-a1ce-35aceb2fa7a5.jpg?type=w800"-->
+<!--                                 width="375" height="281" alt="Card image cap">-->
+<!--                            <div class="card-body">-->
+<!--                                <h5 class="card-title">메뉴이름3</h5>-->
+<!--                                <p class="card-text">메뉴에 대한 간략한 설명</p>-->
+<!--                            </div>-->
+<!--                            <div class="card-footer">-->
+<!--                                <form name="form">-->
+<!--                                    <span style="font-size: 20px;">가격: 21,000원</span><br>-->
+<!--                                    <input name="chkbox" type="checkbox" value="21000"-->
+<!--                                           onClick="itemSum(this.form);"> 메뉴선택-->
+<!--                                    <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>-->
+<!--                                    <input type="number" id="numBox3" class="numBox" min="0" value="0"-->
+<!--                                           readonly="readonly"/>-->
+<!--                                    <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                        <div class="card">-->
+<!--                            <img class="card-img-top"-->
+<!--                                 src="https://mblogthumb-phinf.pstatic.net/MjAxOTAxMDRfMjQg/MDAxNTQ2NTg4MDUxNjI3.gvJDFxuT7iTDmrgbYzKD5MXZpbY37NtEdBC2XYd1lHEg.U-QewSKruPMHKMSEhTFtrZFRjE9ByWgHKl6ksLAIOikg.JPEG.msinvestment/SE-9ab0bd6a-88d0-47e4-a229-aede3d7e6e36.jpg?type=w800"-->
+<!--                                 width="375" height="281" alt="Card image cap">-->
+<!--                            <div class="card-body">-->
+<!--                                <h5 class="card-title">메뉴이름4</h5>-->
+<!--                                <p class="card-text">메뉴에 대한 간략한 설명</p>-->
+<!--                            </div>-->
+<!--                            <div class="card-footer">-->
+<!--                                <form name="form">-->
+<!--                                    <span style="font-size: 20px;">가격: 9,000원</span><br>-->
+<!--                                    <input name="chkbox" type="checkbox" value="9000"-->
+<!--                                           onClick="itemSum(this.form);"> 메뉴선택-->
+<!--                                    <button type="button" class="minus" onclick="minusClick(4, 9000)">-</button>-->
+<!--                                    <input type="number" id="numBox4" class="numBox" min="0" value="0"-->
+<!--                                           readonly="readonly"/>-->
+<!--                                    <button type="button" class="plus" onclick="plusClick(4, 9000)">+</button>-->
+<!--                                </form>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+
             <div id="tab3" class="tabcontent">
                 <h4>목마르면 한잔해~!</h4>
-                <!--                <p>음료 주류 노출</p>-->
                 <div class="card-group">
                     <div class="card">
-                        <img class="card-img-top"
-                             src="..."
-                             width="240" height="180" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">가격: 00,000원</small>
-                        </div>
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
                     </div>
-
                     <div class="card">
-                        <img class="card-img-top"
-                             src="..."
-                             width="240" height="180" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">가격: 00,000원</small>
-                        </div>
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
                     </div>
                 </div>
-                <p></p>
                 <div class="card-group">
                     <div class="card">
-                        <img class="card-img-top"
-                             src="..."
-                             width="240" height="180" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">가격: 00,000원</small>
-                        </div>
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
                     </div>
-
                     <div class="card">
-                        <img class="card-img-top"
-                             src="..."
-                             width="240" height="180" alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">메뉴이름</h5>
-                            <p class="card-text">메뉴에 대한 간략한 설명</p>
-                        </div>
-                        <div class="card-footer">
-                            <small class="text-muted">가격: 00,000원</small>
-                        </div>
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
                     </div>
                 </div>
-
+                <div class="card-group">
+                    <div class="card">
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
+                    </div>
+                    <div class="card">
+                        <form name="form">
+                            <span style="font-size: 20px;">가격: 21,000원</span><br>
+                            <input name="chkbox" type="checkbox" value="21000"
+                                   onClick="itemSum(this.form);"> 메뉴선택
+                            <button type="button" class="minus" onclick="minusClick(3, 21000)">-</button>
+                            <input type="number" id="numBox3" class="numBox" min="0" value="0"
+                                   readonly="readonly"/>
+                            <button type="button" class="plus" onclick="plusClick(3, 21000)">+</button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -427,7 +628,7 @@
     </div>
     <button onclick="calculate()">새로고침</button>
     <br>
-    <img src="https://imgur.com/9FMsBVX.jpg">
+    <img src="https://imgur.com/9FMsBVX.jpg" width="100%">
     <hr>
     <div style="text-align: center; color:lightslategray; font-size: 13px"> WEB MENU SERVICE ⓒ2020 SMART ChopChop
         all
